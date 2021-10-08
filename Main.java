@@ -1,3 +1,4 @@
+import java.awt.Point;
 import java.util.Scanner;
 
 public class Main {
@@ -65,38 +66,59 @@ public class Main {
 		// Position Commands
 		case "pos":
 		case "position":
-			// Integrity Check
-			if (cmdParts.length == 1) {
+			Point pos = getPointFromInput(cmdParts);
+			if (pos == null) {
 				System.out.println(Messages.POS_CMD_HELP);
-				return;
-			}
-			// Split and check for integrity
-			String[] pointInput = cmdParts[1].split(" ");
-			if (pointInput.length < 2) {
-				System.out.println(Messages.POS_CMD_HELP);
-			}
-
-			// Parse the values entered by the user
-			try {
-				// X Position
-				int x = -1;
-				System.out.println(pointInput[0]);
-				if (!pointInput[0].equals("reset"))
-					x = Integer.parseInt(pointInput[0]);
-
-				// Y Position
-				int y = -1;
-				if (!pointInput[1].equals("reset")) {
-					y = Integer.parseInt(pointInput[1]);
-				}
-
-				// Call the relocator
-				f.setWindowLocation(x, y);
-
-			} catch (Exception e) {
-				System.out.println("--> Input was not a number.");
+			} else {
+				f.setWindowLocation(pos.x, pos.y);
 			}
 			break;
+		// Location Commands
+		case "scale":
+			Point scale = getPointFromInput(cmdParts);
+			if (scale == null) {
+				System.out.println(Messages.SCALE_CMD_HELP);
+			} else {
+				if (scale.x < 0 || scale.y < 0) {
+					System.out.println(Messages.SCALE_BELOW_ZERO_MESSAGE);
+				}
+				f.setWindowScale(scale.x, scale.y);
+			}
+
+		}
+	}
+
+	public static Point getPointFromInput(String[] cmdParts) {
+		// Integrity Check
+		if (cmdParts.length == 1) {
+			return null;
+		}
+		// Split and check for integrity
+		String[] pointInput = cmdParts[1].split(" ");
+		if (pointInput.length < 2) {
+			return null;
+		}
+
+		// Parse the values entered by the user
+		try {
+			// X Position
+			int x = -1;
+			System.out.println(pointInput[0]);
+			if (!pointInput[0].equals("reset"))
+				x = Integer.parseInt(pointInput[0]);
+
+			// Y Position
+			int y = -1;
+			if (!pointInput[1].equals("reset")) {
+				y = Integer.parseInt(pointInput[1]);
+			}
+			
+			// Return the Point
+			return new Point(x,y);
+
+		} catch (Exception e) {
+			System.out.println(Messages.NAN_MESSAGE);
+			return null;
 		}
 	}
 
