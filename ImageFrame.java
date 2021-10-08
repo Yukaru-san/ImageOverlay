@@ -23,7 +23,9 @@ public class ImageFrame {
 
 	private Window w;
 	private BufferedImage currentImage;
-
+	
+	private String lastUrl;
+	
 	private int width = 1000;
 	private int height = 1000;
 	private float opacity = 0.5f;
@@ -83,10 +85,20 @@ public class ImageFrame {
 		if (y == -1)
 			y = Toolkit.getDefaultToolkit().getScreenSize().height / 2 - height / 2;
 		
-		System.out.println("Setting location to "+x+ " "+ y);
 		w.setLocation(x,y);
 	}
 
+	// Sets the Window's Scale (width and height)
+	public void setWindowScale(int width, int height) {
+		this.width = width;
+		this.height = height;
+		
+		hideWindow();
+		setCurrentImageFromURL(lastUrl);
+		setWindowLocation(-1, -1);
+		openWindow();
+	}
+	
 	// Sets the current window see-through (windows only)
 	private static void setTransparent(Component w) {
 		WinDef.HWND hwnd = getHWnd(w);
@@ -123,6 +135,7 @@ public class ImageFrame {
 			prefImg = changeImageOpacity(prefImg, opacity);
 			currentImage = prefImg;
 
+			lastUrl = url;
 			return true;
 		} catch (Exception e) {
 			return false;
